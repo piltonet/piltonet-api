@@ -1,0 +1,40 @@
+{
+  "name": "piltonet-api",
+  "version": "2.0.0",
+  "description": "Piltonet API Server",
+  "scripts": {
+    "start": "node api.js"
+  },
+  "author": "Farox",
+  "license": "MIT",
+  "dependencies": {
+    "@types/chai": "^4.3.5",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^20.2.5",
+    "axios": "^0.24.0",
+    "base-path-converter": "^1.0.2",
+    "base64-img": "^1.0.4",
+    "body-parser": "^1.19.0",
+    "chai": "^4.3.7",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "ethers": "^5.7.0",
+    "everscale-standalone-client": "^2.1.19",
+    "express": "^4.17.1",
+    "express-useragent": "^1.0.15",
+    "fs": "^0.0.1-security",
+    "js-yaml": "^4.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.95.12",
+    "locklift": "^2.5.5",
+    "nodemon": "^2.0.15",
+    "pg": "^8.7.1",
+    "pg-promise": "^10.11.1",
+    "prettier": "^2.8.8",
+    "socket.io": "^4.4.0",
+    "ts-mocha": "^10.0.0",
+    "typescript": "^4.7.4"
+  }
+}
