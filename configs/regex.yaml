@@ -2,7 +2,7 @@ parameters: #List of Parameters that user can send in requests
   account_address:
     regex: ^[0-9a-zA-Z:]{42,100}$
     type: string
-  account_username:
+  account_nickname:
     # regex: ^(?=.{3,20}$)(?![_])(?!.*[_]{2})[a-zA-Z0-9_]+(?<![_])$
     regex: ^(?=.{4,25}$)(?![_])(?!.*[_]{2})[a-zA-Z][a-zA-Z0-9_]+(?![_])$
     type: string

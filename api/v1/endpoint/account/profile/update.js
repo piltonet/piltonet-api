@@ -2,7 +2,6 @@ const fs = require('fs');
 const base64Img = require('base64-img');
 const libs = require.main.require('./libs');
 const models = require.main.require('./models');
-const controllers = require.main.require('./controllers');
 
 // Constructor of Endpoint Leaf
 class leaf { // Required
@@ -49,7 +48,7 @@ async function updateProfile(http_request, response){
   const Account = connected_account.result;
   
   /************* Get Main Account *************/
-  let dbMainAccount = await models.queries.select_table('main_accounts', {main_account_address: Account.main_account_address});
+  let dbMainAccount = await models.queries.select_table('profiles', {main_account_address: Account.main_account_address});
   if(!dbMainAccount.done || !dbMainAccount.data){
     resp = libs.response.setup(resp, '500.1-1');
     response.status(200);
@@ -98,7 +97,7 @@ async function updateProfile(http_request, response){
   
   /***************** Update Main Account *******************/
   let main_account_params = {
-    account_username: MainAccount.account_username,
+    account_nickname: MainAccount.account_nickname,
     account_email: MainAccount.account_email,
     account_image_url: params.verifiedParams.account_image_url,
     account_fullname: params.verifiedParams.account_fullname,
@@ -108,7 +107,7 @@ async function updateProfile(http_request, response){
     account_social_linkedin: params.verifiedParams.account_social_linkedin,
     account_social_telegram: params.verifiedParams.account_social_telegram
   }
-  let main_account_update = await models.queries.update_table('main_accounts', main_account_params, {id: MainAccount.id});
+  let main_account_update = await models.queries.update_table('profiles', main_account_params, {id: MainAccount.id});
   if(!main_account_update.done){
     resp = libs.response.setup(resp, `${main_account_update.code}-3`);
     response.status(200);

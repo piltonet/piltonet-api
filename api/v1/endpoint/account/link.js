@@ -2,7 +2,6 @@ const fs = require('fs');
 const base64Img = require('base64-img');
 const libs = require.main.require('./libs');
 const models = require.main.require('./models');
-const controllers = require.main.require('./controllers');
 
 // Constructor of Endpoint Leaf
 class leaf { // Required
@@ -67,7 +66,7 @@ async function linkAccount(http_request, response){
   }
 
   /***************** Look For Main Account *******************/
-  let dbMainAccount = await models.queries.select_table('main_accounts', {main_account_address: params.verifiedParams.main_account_address});
+  let dbMainAccount = await models.queries.select_table('profiles', {main_account_address: params.verifiedParams.main_account_address});
   if(!dbMainAccount.done){
     resp = libs.response.setup(resp, `${dbMainAccount.code}-2`);
     response.status(200);

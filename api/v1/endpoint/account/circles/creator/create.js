@@ -1,6 +1,5 @@
 const libs = require.main.require('./libs');
 const models = require.main.require('./models');
-const controllers = require.main.require('./controllers');
 
 // Constructor of Endpoint Leaf
 class leaf { // Required

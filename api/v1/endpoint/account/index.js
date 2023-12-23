@@ -1,6 +1,5 @@
 const libs = require.main.require('./libs');
 const models = require.main.require('./models');
-const controllers = require.main.require('./controllers');
 
 // Constructor of Endpoint Leaf
 class leaf { // Required
@@ -51,7 +50,7 @@ async function getAccount(http_request, response){
     return
   }
   const Account = connected_account.result;
-  //global._SOCKET.sockets.to(USER.socket_id).emit('test_message', {message : USER, account_username : USER.account_email});
+  //global._SOCKET.sockets.to(USER.socket_id).emit('test_message', {message : USER, account_nickname : USER.account_email});
 
   const result = {
     account_address: Account.account_address,

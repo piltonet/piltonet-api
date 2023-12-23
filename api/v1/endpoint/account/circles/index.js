@@ -1,6 +1,5 @@
 const libs = require.main.require('./libs');
 const models = require.main.require('./models');
-const controllers = require.main.require('./controllers');
 
 // Constructor of Endpoint Leaf
 class leaf { // Required
@@ -48,7 +47,7 @@ async function getAccountCircles(http_request, response){
   const Account = connected_account.result;
 
   /***************** Get & Makeup Main Accounts *******************/
-  let dbMainAccounts = await models.queries.select_table('main_accounts');
+  let dbMainAccounts = await models.queries.select_table('profiles');
   if(!dbMainAccounts.done || !dbMainAccounts.data){
     resp = libs.response.setup(resp, '500.1-1');
     response.status(200);
@@ -59,7 +58,7 @@ async function getAccountCircles(http_request, response){
   for(let main_account of dbMainAccounts.data) {
     MainAccountsMakeup[main_account.main_account_address] = {
       main_account_address: main_account.main_account_address,
-      account_username: main_account.account_username,
+      account_nickname: main_account.account_nickname,
       account_email: main_account.account_email,
       account_fullname: main_account.account_fullname,
       account_social_twitter: main_account.account_social_twitter,

@@ -2,7 +2,7 @@ const fs = require('fs');
 const base64Img = require('base64-img');
 const libs = require.main.require('./libs');
 const models = require.main.require('./models');
-const controllers = require.main.require('./controllers');
+const { ethers } = require('hardhat');
 
 // Constructor of Endpoint Leaf
 class leaf { // Required
@@ -50,7 +50,7 @@ async function createAccount(http_request, response){
   
   /************* Validate Params Regex from libs.validations.validate_request_params() *************/
   try{
-    var params = libs.validations.validate_request_params(http_request, ['account_username', 'account_email'], []);
+    var params = libs.validations.validate_request_params(http_request, ['account_nickname', 'account_email'], ['account_email_verified']);
   }catch(e){
     resp = libs.response.setup(resp, '400.2-1');
     resp.result = [e];
@@ -66,13 +66,36 @@ async function createAccount(http_request, response){
     return
   }
 
+  /***************** ERC721Profile > Create Profile *******************/
+  const NETWORK = process.env.DEFAULT_NETWORK;
+  const deployedERC721Profile = require.main.require(`./deployments/${NETWORK}/ERC721Profile.json`);
+
+  const ERC721Profile = await ethers.getContractAt('ERC721Profile', deployedERC721Profile.address);
+
+  let tokenId = 0;
+  let tbaAddress = '0x';
+  if((await ERC721Profile.balanceOf(Account.account_address)).toString() == '0') {
+    const tx = await ERC721Profile.createProfile(Account.account_address, {
+      gasLimit: 4000000
+    });
+    await tx.wait()
+  }
+  const tokenOfAccount = await ERC721Profile.tokenOf(Account.account_address);
+  tokenId = tokenOfAccount[0].toString();
+  tbaAddress = tokenOfAccount[1];
+  console.log(`Profile Created. tokenId: ${tokenId}, tba:${tbaAddress}`);
+  
   /***************** Insert Main Account *******************/
   let main_account_params = {
     main_account_address: Account.account_address,
-    account_username: params.verifiedParams.account_username,
-    account_email: params.verifiedParams.account_email
+    profiles_contract_address: deployedERC721Profile.address,
+    account_token_id: tokenId,
+    account_tba_address: tbaAddress,
+    account_nickname: params.verifiedParams.account_nickname,
+    account_email: params.verifiedParams.account_email,
+    account_email_verified: params.verifiedParams.account_email_verified
   }
-  let main_account_insert = await models.queries.insert_table('main_accounts', main_account_params);
+  let main_account_insert = await models.queries.insert_table('profiles', main_account_params);
   if(!main_account_insert.done){
     resp = libs.response.setup(resp, `${main_account_insert.code}-2`);
     response.status(200);

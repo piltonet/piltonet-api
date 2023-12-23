@@ -2,7 +2,6 @@ const fs = require('fs');
 const base64Img = require('base64-img');
 const libs = require.main.require('./libs');
 const models = require.main.require('./models');
-const controllers = require.main.require('./controllers');
 
 // Constructor of Endpoint Leaf
 class leaf { // Required
@@ -63,7 +62,7 @@ async function createInviteCode(http_request, response){
       account_invite_code: inviteCode,
       account_invite_code_ed: inviteCodeED
     }
-    let main_account_update = await models.queries.update_table('main_accounts', main_account_params, {main_account_address: Account.main_account_address});
+    let main_account_update = await models.queries.update_table('profiles', main_account_params, {main_account_address: Account.main_account_address});
     if(!main_account_update.done){
       if(main_account_update.code != 405.2) {
         resp = libs.response.setup(resp, `${main_account_update.code}-3`);

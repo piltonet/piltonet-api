@@ -32,7 +32,7 @@ class connections {
             host: process.env.DB_HOST,
             port: process.env.DB_PORT,
             database: process.env.DB_DATABASE,
-            account_username: process.env.DB_USERNAME,
+            account_nickname: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD
           },
           blockchain: {
@@ -40,7 +40,7 @@ class connections {
             host: process.env.DB_HOST,
             port: process.env.DB_PORT,
             database: process.env.BC_DB_DATABASE,
-            account_username: process.env.BC_DB_USERNAME,
+            account_nickname: process.env.BC_DB_USERNAME,
             password: process.env.BC_DB_PASSWORD
           }
         }  
@@ -57,8 +57,8 @@ class connections {
           if (!(_key in this.#db_uris)){
             let params = conf[key][_key];
             this.#db_uris[key][_key] = {
-              pgp: `postgres://${params.account_username}:${params.password}@${params.host}:${params.port}/${params.database}?application_name=${params.application_name}`,
-              knex: `postgresql://${params.account_username}:${params.password}@${params.host}:${params.port}/${params.database}?application_name=${params.application_name}`
+              pgp: `postgres://${params.account_nickname}:${params.password}@${params.host}:${params.port}/${params.database}?application_name=${params.application_name}`,
+              knex: `postgresql://${params.account_nickname}:${params.password}@${params.host}:${params.port}/${params.database}?application_name=${params.application_name}`
             };
           }
         }

@@ -1,9 +1,7 @@
 const fs = require('fs');
 const base64Img = require('base64-img');
-const { Wallet } = require('ethers');
 const libs = require.main.require('./libs');
 const models = require.main.require('./models');
-const controllers = require.main.require('./controllers');
 
 // Constructor of Endpoint Leaf
 class leaf { // Required

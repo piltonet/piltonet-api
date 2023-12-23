@@ -2,7 +2,6 @@ const fs = require('fs');
 const base64Img = require('base64-img');
 const libs = require.main.require('./libs');
 const models = require.main.require('./models');
-const controllers = require.main.require('./controllers');
 
 // Constructor of Endpoint Leaf
 class leaf { // Required
@@ -67,7 +66,7 @@ async function fetchInviteCode(http_request, response){
   }
 
   /***************** Look For Friend Main Account *******************/
-  let dbFriendMainAccount = await models.queries.select_table('main_accounts', {account_invite_code: params.verifiedParams.invite_code});
+  let dbFriendMainAccount = await models.queries.select_table('profiles', {account_invite_code: params.verifiedParams.invite_code});
   if(!dbFriendMainAccount.done){
     resp = libs.response.setup(resp, `${dbFriendMainAccount.code}-2`);
     response.status(200);
@@ -114,7 +113,7 @@ async function fetchInviteCode(http_request, response){
 
   let invite_code_account = {
     main_account_address: FriendMainAccount.main_account_address,
-    account_username: FriendMainAccount.account_username,
+    account_nickname: FriendMainAccount.account_nickname,
     account_email: FriendMainAccount.account_email,
     account_fullname: FriendMainAccount.account_fullname,
     account_image_url: FriendMainAccount.account_image_url,

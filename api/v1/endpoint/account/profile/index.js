@@ -1,6 +1,5 @@
 const libs = require.main.require('./libs');
 const models = require.main.require('./models');
-const controllers = require.main.require('./controllers');
 
 // Constructor of Endpoint Leaf
 class leaf { // Required
@@ -58,7 +57,7 @@ async function getAccountProfile(http_request, response){
   var ContactsNumber = 0;
   
   if(Account.main_account_address && Account.account_status != 'waiting') {
-    let main_account = await models.queries.select_table('main_accounts', {main_account_address: Account.main_account_address});
+    let main_account = await models.queries.select_table('profiles', {main_account_address: Account.main_account_address});
     if(!main_account.done || !main_account.data) {
       resp = libs.response.setup(resp, `${main_account.code}-2`);
       response.status(200);
@@ -92,7 +91,7 @@ async function getAccountProfile(http_request, response){
     account_address: MainAccount.main_account_address,
     account_image_url: MainAccount.account_image_url,
     account_fullname: MainAccount.account_fullname,
-    account_username: MainAccount.account_username,
+    account_nickname: MainAccount.account_nickname,
     account_email: MainAccount.account_email,
     account_social_twitter: MainAccount.account_social_twitter,
     account_social_facebook: MainAccount.account_social_facebook,

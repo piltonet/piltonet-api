@@ -28,7 +28,7 @@ async function insert_table(table_name, insert_values){
     }
   }catch(e){
     if(typeof e.code != 'undefined' && e.code == '23505'){
-      if(e.constraint.includes('account_username')) result.code = 405.1;
+      if(e.constraint.includes('account_nickname')) result.code = 405.1;
       else if(e.constraint.includes('email')) result.code = 405.6;
       else {
         console.log(e);
@@ -58,7 +58,7 @@ async function update_table(table_name, update_values, where_clause = null){
     }
   }catch(e){
     if(typeof e.code != 'undefined' && e.code == '23505'){
-      if(e.constraint.includes('account_username')) result.code = 405.1;
+      if(e.constraint.includes('account_nickname')) result.code = 405.1;
       else if(e.constraint.includes('account_invite_code')) result.code = 405.2;
       else {
         console.log(e);

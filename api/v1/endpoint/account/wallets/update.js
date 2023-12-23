@@ -2,7 +2,6 @@ const fs = require('fs');
 const base64Img = require('base64-img');
 const libs = require.main.require('./libs');
 const models = require.main.require('./models');
-const controllers = require.main.require('./controllers');
 
 // Constructor of Endpoint Leaf
 class leaf { // Required
@@ -49,7 +48,7 @@ async function updateProfile(http_request, response){
   const Account = connected_account.result;
   
   /************* Get Main Account *************/
-  let dbMainAccount = await models.queries.select_table('main_accounts', {main_account_address: Account.main_account_address});
+  let dbMainAccount = await models.queries.select_table('profiles', {main_account_address: Account.main_account_address});
   if(!dbMainAccount.done || !dbMainAccount.data){
     resp = libs.response.setup(resp, '500.1-1');
     response.status(200);
@@ -60,7 +59,7 @@ async function updateProfile(http_request, response){
   
   /************* Validate Params Regex from libs.validations.validate_request_params() *************/
   try{
-    var params = libs.validations.validate_request_params(http_request, ['account_fullname', 'account_username'],
+    var params = libs.validations.validate_request_params(http_request, ['account_fullname', 'account_nickname'],
       [
         'account_image_url',
         'account_image_file',
@@ -99,7 +98,7 @@ async function updateProfile(http_request, response){
   let main_account_params = {
     account_image_url: params.verifiedParams.account_image_url,
     account_fullname: params.verifiedParams.account_fullname,
-    // account_username: params.verifiedParams.account_username,
+    // account_nickname: params.verifiedParams.account_nickname,
     // account_email: params.verifiedParams.account_email,
     account_social_twitter: params.verifiedParams.account_social_twitter,
     account_social_facebook: params.verifiedParams.account_social_facebook,
@@ -107,7 +106,7 @@ async function updateProfile(http_request, response){
     account_social_linkedin: params.verifiedParams.account_social_linkedin,
     account_social_telegram: params.verifiedParams.account_social_telegram
   }
-  let main_account_update = await models.queries.update_table('main_accounts', main_account_params, {id: MainAccount.id});
+  let main_account_update = await models.queries.update_table('profiles', main_account_params, {id: MainAccount.id});
   if(!main_account_update.done){
     resp = libs.response.setup(resp, `${main_account_update.code}-3`);
     response.status(200);
