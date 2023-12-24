@@ -68,9 +68,10 @@ async function createAccount(http_request, response){
 
   /***************** ERC721Profile > Create Profile *******************/
   const NETWORK = process.env.DEFAULT_NETWORK;
-  const deployedERC721Profile = require.main.require(`./deployments/${NETWORK}/ERC721Profile.json`);
+  const deployedERC721Profile = require.main.require(`./contracts/deployments/${NETWORK}/ERC721Profile.json`);
 
-  const ERC721Profile = await ethers.getContractAt('ERC721Profile', deployedERC721Profile.address);
+  const contractAbi = require.main.require("./contracts/abi/ERC721Profile.json");
+  const ERC721Profile = await ethers.getContractAt(contractAbi, deployedERC721Profile.address);
 
   let tokenId = 0;
   let tbaAddress = '0x';
