@@ -113,6 +113,7 @@ async function fetchInviteCode(http_request, response){
 
   let invite_code_account = {
     main_account_address: FriendMainAccount.main_account_address,
+    account_tba_address: FriendMainAccount.account_tba_address,
     account_nickname: FriendMainAccount.account_nickname,
     account_email: FriendMainAccount.account_email,
     account_fullname: FriendMainAccount.account_fullname,
