@@ -89,6 +89,9 @@ async function getAccountProfile(http_request, response){
 
   const result = MainAccount ? {
     account_address: MainAccount.main_account_address,
+    profiles_contract_address: MainAccount.profiles_contract_address,
+    account_token_id: MainAccount.account_token_id,
+    account_tba_address: MainAccount.account_tba_address,
     account_image_url: MainAccount.account_image_url,
     account_fullname: MainAccount.account_fullname,
     account_nickname: MainAccount.account_nickname,
