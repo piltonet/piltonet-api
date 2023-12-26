@@ -64,6 +64,7 @@ async function getAccountContacts(http_request, response){
   for(let main_account of dbMainAccounts.data) {
     MainAccountsMakeup[main_account.main_account_address] = {
       main_account_address: main_account.main_account_address,
+      account_tba_address: main_account.account_tba_address,
       account_nickname: main_account.account_nickname,
       account_email: main_account.account_email,
       account_fullname: main_account.account_fullname,
