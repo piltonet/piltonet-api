@@ -108,7 +108,7 @@ async function createCircle(http_request, response){
     circle_round_days: params.verifiedParams.circle_round_days,
     circle_payment_type: params.verifiedParams.circle_payment_type,
     circle_service_charge: process.env.PILTONET_CIRCLES_SERVICE_CHARGE / 10000,
-    circle_service_address: process.env.VENOM_SERVICE_ADMIN_ADDRESS,
+    circle_service_address: process.env.SERVICE_ADMIN_PUBLIC_KEY,
     circle_status: 'deployed',
     circle_deployed_at: new Date()
   }
