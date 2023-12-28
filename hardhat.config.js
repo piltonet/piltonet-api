@@ -6,7 +6,7 @@ module.exports = {
   defaultNetwork: "victestnet",
   networks: {
     victestnet: {
-      url: "https://rpc.testnet.tomochain.com",
+      url: "https://rpc-testnet.viction.xyz",
       accounts: [process.env.SERVICE_ADMIN_PRIVATE_KEY || ""]
     },
     vicmainnet: {
