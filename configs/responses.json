@@ -71,6 +71,16 @@
             }
         ]
     },
+    "403": {
+        "done": false,
+        "message_type": "error",
+        "messages": [
+            {
+                "id": 1,
+                "en": "The interaction with the contract failed."
+            }
+        ]
+    },
     "404": {
         "done": false,
         "message_type": "error",
