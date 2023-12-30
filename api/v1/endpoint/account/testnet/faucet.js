@@ -76,7 +76,7 @@ async function claimPCUSD(http_request, response){
 
     let _balance = await VRC25PCUSD.balanceOf(params.verifiedParams.account_tba_address);
     const balance = parseInt(_balance.toString()) / 1e6;
-    if(balance > 1150) {
+    if(balance > 0) {
       resp.status_code = 200;
       resp.done = false;
       resp.message_type = 'warning';
