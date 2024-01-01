@@ -15,7 +15,7 @@ module.exports = {
     },
     tomotestnet: {
       url: "https://rpc.testnet.tomochain.com",
-      accounts: [process.env.PRIVATE_KEY || ""]
+      accounts: [process.env.SERVICE_ADMIN_PRIVATE_KEY || ""]
     }
   }
 };
