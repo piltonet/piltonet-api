@@ -49,12 +49,16 @@ async function createCircle(http_request, response){
   try{
     var params = libs.validations.validate_request_params(http_request, [
       'circle_id',
-      'circle_contract',
+      'circle_creator_tba',
       'circle_chain_id',
       'circle_payment_token',
-      'circle_round_days',
       'circle_payment_type',
-      'circle_creator_earnings'
+      'circle_round_days',
+      'circle_winners_order',
+      'circle_patience_benefit',
+      'circle_creator_earnings',
+      'circle_service_charge',
+      'circle_service_address'
     ], []);
   }catch(e){
     resp = libs.response.setup(resp, '400.2-1');
@@ -65,6 +69,13 @@ async function createCircle(http_request, response){
   }
   if(params.hasErrors){
     resp = libs.response.setup(resp, '400.3-1');
+    resp.result = [params.errors];
+    response.status(200);
+    response.json(resp);
+    return
+  }
+  if(params.verifiedParams.circle_service_address != process.env.SERVICE_ADMIN_PUBLIC_KEY){
+    resp = libs.response.setup(resp, '400.3-2');
     resp.result = [params.errors];
     response.status(200);
     response.json(resp);
@@ -99,19 +110,21 @@ async function createCircle(http_request, response){
 
   let circle_params = {
     circle_id: params.verifiedParams.circle_id,
-    circle_contract: params.verifiedParams.circle_contract,
+    circle_creator_main: Account.main_account_address,
+    circle_creator_tba: params.verifiedParams.circle_creator_tba,
     circle_chain_id: params.verifiedParams.circle_chain_id,
     circle_payment_token: params.verifiedParams.circle_payment_token,
-    circle_creator: Account.account_address,
-    circle_creator_main: Account.main_account_address,
-    circle_creator_earnings: params.verifiedParams.circle_creator_earnings,
-    circle_round_days: params.verifiedParams.circle_round_days,
     circle_payment_type: params.verifiedParams.circle_payment_type,
-    circle_service_charge: process.env.PILTONET_CIRCLES_SERVICE_CHARGE / 10000,
+    circle_round_days: params.verifiedParams.circle_round_days,
+    circle_winners_order: params.verifiedParams.circle_winners_order,
+    circle_patience_benefit: params.verifiedParams.circle_patience_benefit,
+    circle_creator_earnings: params.verifiedParams.circle_creator_earnings,
+    circle_service_charge: params.verifiedParams.circle_service_charge,
     circle_service_address: process.env.SERVICE_ADMIN_PUBLIC_KEY,
     circle_status: 'deployed',
     circle_deployed_at: new Date()
   }
+  
   let circles_insert = await models.queries.insert_table('circles', circle_params);
   if(!circles_insert.done){
     resp = libs.response.setup(resp, `${circles_insert.code}-3`);
