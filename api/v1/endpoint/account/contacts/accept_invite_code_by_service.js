@@ -67,15 +67,15 @@ async function acceptInviteCodeByService(http_request, response){
   }
 
   // To Do
-  /***************** TrustedContacts > addContactByOwner *******************/
+  /***************** ContactList > addContactByOwner *******************/
   try {
     const NETWORK = process.env.DEFAULT_NETWORK;
-    const deployedTrustedContacts = require.main.require(`./contracts/deployments/${NETWORK}/TrustedContacts.json`);
+    const deployedContactList = require.main.require(`./contracts/deployments/${NETWORK}/ContactList.json`);
   
-    const contractAbi = require.main.require("./contracts/abi/TrustedContacts.json");
-    const TrustedContacts = await ethers.getContractAt(contractAbi, deployedTrustedContacts.address);
+    const contractAbi = require.main.require("./contracts/abi/ContactList.json");
+    const ContactList = await ethers.getContractAt(contractAbi, deployedContactList.address);
   
-    const tx = await TrustedContacts.addContactByOwner(params.verifiedParams.profile_tba, params.verifiedParams.contact_tba, {
+    const tx = await ContactList.addContactByOwner(params.verifiedParams.profile_tba, params.verifiedParams.contact_tba, {
       gasLimit: 4000000
     });
     await tx.wait()
