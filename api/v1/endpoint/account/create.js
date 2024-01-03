@@ -67,65 +67,73 @@ async function createAccount(http_request, response){
   }
 
   /***************** ERC721Profile > Create Profile *******************/
-  const NETWORK = process.env.DEFAULT_NETWORK;
-  const deployedERC721Profile = require.main.require(`./contracts/deployments/${NETWORK}/ERC721Profile.json`);
+  try{
+    const NETWORK = process.env.DEFAULT_NETWORK;
+    const deployedERC721Profile = require.main.require(`./contracts/deployments/${NETWORK}/ERC721Profile.json`);
+console.log(deployedERC721Profile);
+    const contractAbi = require.main.require("./contracts/abi/ERC721Profile.json");
+    const ERC721Profile = await ethers.getContractAt(contractAbi, deployedERC721Profile.address);
 
-  const contractAbi = require.main.require("./contracts/abi/ERC721Profile.json");
-  const ERC721Profile = await ethers.getContractAt(contractAbi, deployedERC721Profile.address);
+    let tokenId = 0;
+    let tbaAddress = '0x';
+    if((await ERC721Profile.balanceOf(Account.account_address)).toString() == '0') {
+      const tx = await ERC721Profile.createProfile(Account.account_address, {
+        gasLimit: 4000000
+      });
+      await tx.wait()
+    }
+    const tokenOfAccount = await ERC721Profile.tokenOf(Account.account_address);
+    tokenId = tokenOfAccount[0].toString();
+    tbaAddress = tokenOfAccount[1];
+    console.log(`Profile Created. tokenId: ${tokenId}, tba:${tbaAddress}`);
 
-  let tokenId = 0;
-  let tbaAddress = '0x';
-  if((await ERC721Profile.balanceOf(Account.account_address)).toString() == '0') {
-    const tx = await ERC721Profile.createProfile(Account.account_address, {
-      gasLimit: 4000000
-    });
-    await tx.wait()
-  }
-  const tokenOfAccount = await ERC721Profile.tokenOf(Account.account_address);
-  tokenId = tokenOfAccount[0].toString();
-  tbaAddress = tokenOfAccount[1];
-  console.log(`Profile Created. tokenId: ${tokenId}, tba:${tbaAddress}`);
-  
-  /***************** Insert Main Account *******************/
-  let main_account_params = {
-    main_account_address: Account.account_address,
-    profiles_contract_address: deployedERC721Profile.address,
-    account_token_id: tokenId,
-    account_tba_address: tbaAddress,
-    account_nickname: params.verifiedParams.account_nickname,
-    account_email: params.verifiedParams.account_email,
-    account_email_verified: params.verifiedParams.account_email_verified
-  }
-  let main_account_insert = await models.queries.insert_table('profiles', main_account_params);
-  if(!main_account_insert.done){
-    resp = libs.response.setup(resp, `${main_account_insert.code}-2`);
+    /***************** Insert Main Account *******************/
+    let main_account_params = {
+      main_account_address: Account.account_address,
+      profiles_contract_address: deployedERC721Profile.address,
+      account_token_id: tokenId,
+      account_tba_address: tbaAddress,
+      account_nickname: params.verifiedParams.account_nickname,
+      account_email: params.verifiedParams.account_email,
+      account_email_verified: params.verifiedParams.account_email_verified
+    }
+    let main_account_insert = await models.queries.insert_table('profiles', main_account_params);
+    if(!main_account_insert.done){
+      resp = libs.response.setup(resp, `${main_account_insert.code}-2`);
+      response.status(200);
+      response.json(resp);
+      return
+    }
+
+    /***************** Update Account *******************/
+    let account_params = {
+      account_status: 'main',
+      main_account_address: Account.account_address
+    }
+    let account_update = await models.queries.update_table('accounts', account_params, {id: Account.id});
+    if(!account_update.done){
+      resp = libs.response.setup(resp, `${account_update.code}-4`);
+      response.status(200);
+      response.json(resp);
+      return
+    }
+
+    resp.status_code = 200;
+    resp.done = true;
+    resp.message_type = 'success';
+    resp.message = 'Account profile has been created successfully.';
+    resp.result = [main_account_params];
+    response.status(200);
+    response.json(resp);
+    return
+  }catch(e){
+    console.log(e);
+    resp = libs.response.setup(resp, '400.3-2');
+    resp.result = [e];
     response.status(200);
     response.json(resp);
     return
   }
-
-  /***************** Update Account *******************/
-  let account_params = {
-    account_status: 'main',
-    main_account_address: Account.account_address
-  }
-  let account_update = await models.queries.update_table('accounts', account_params, {id: Account.id});
-  if(!account_update.done){
-    resp = libs.response.setup(resp, `${account_update.code}-4`);
-    response.status(200);
-    response.json(resp);
-    return
-  }
-
-
-  resp.status_code = 200;
-  resp.done = true;
-  resp.message_type = 'success';
-  resp.message = 'Account profile has been created successfully.';
-  resp.result = [main_account_params];
-  response.status(200);
-  response.json(resp);
-  return
 }
 
 module.exports = new leaf();
