@@ -97,7 +97,7 @@
         "messages": [
             {
                 "id": 1,
-                "en": "Username already taken, please choose another one."
+                "en": "Nickname already taken, please choose another one."
             },
             {
                 "id": 2,

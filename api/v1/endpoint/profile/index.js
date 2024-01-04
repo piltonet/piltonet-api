@@ -54,7 +54,7 @@ async function getProfile(http_request, response){
     return
   }
   
-  /************* Find Account Username *************/
+  /************* Find Account Nickname *************/
   let dbAccount = await models.queries.select_table('accounts', {account_nickname: params.verifiedParams.profile_index});
   if(!dbAccount.done){
     resp = libs.response.setup(resp, '500.1-1');

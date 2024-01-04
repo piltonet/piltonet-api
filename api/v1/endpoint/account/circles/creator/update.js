@@ -104,7 +104,7 @@ async function updateCircle(http_request, response) {
     circle_max_members: params.verifiedParams.circle_max_members,
     circle_winners_order: params.verifiedParams.circle_winners_order,
     circle_winners_number: params.verifiedParams.circle_winners_number,
-    circle_patience_benefit: params.verifiedParams.circle_patience_benefit / 100,
+    circle_patience_benefit: params.verifiedParams.circle_patience_benefit,
     circle_status: 'setuped'
   }
   let circles_update = await models.queries.update_table('circles', circle_params, {id: Circle.id});
