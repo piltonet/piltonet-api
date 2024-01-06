@@ -108,7 +108,7 @@ async function getProfile(http_request, response){
     response.status(200);
     response.json(profileNFTJson);
   } catch(err) {
-    console.log(err);
+    // console.log(err);
     resp = libs.response.setup(resp, '404.1-2');
     response.status(404);
     response.json(resp);
