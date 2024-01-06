@@ -72,18 +72,35 @@ async function addToWhitelist(http_request, response){
     return
   }
 
+  /***************** Get & Makeup Main Accounts By TBA *******************/
+  let dbMainAccounts = await models.queries.select_table('profiles');
+  if(!dbMainAccounts.done || !dbMainAccounts.data){
+    resp = libs.response.setup(resp, '500.1-1');
+    response.status(200);
+    response.json(resp);
+    return
+  }
+  var TBAsMakeup = {};
+  for(let main_account of dbMainAccounts.data) {
+    TBAsMakeup[main_account.account_tba_address] = {
+      main_account_address: main_account.main_account_address
+    }
+  }
+
+  /***************** Insert Circle Whitelists *******************/
   for(var contactAdr of contactAdrs) {
-    /***************** Insert Circle Whitelists *******************/
-    await models.queries.insert_table('circles_whitelists',
-      {
-        circle_id: params.verifiedParams.circle_id,
-        whitelist_account_address: contactAdr,
-        whitelist_moderator_address: Account.account_address,
-        whitelist_is_alive: true,
-        whitelist_is_joined: false,
-        whitelist_is_rejected: false
-      }
-    );
+    if(contactAdr in TBAsMakeup) {
+      await models.queries.insert_table('circles_whitelists',
+        {
+          circle_id: params.verifiedParams.circle_id,
+          whitelist_account_address: TBAsMakeup[contactAdr].main_account_address,
+          whitelist_moderator_address: Account.account_address,
+          whitelist_is_alive: true,
+          whitelist_is_joined: false,
+          whitelist_is_rejected: false
+        }
+      );
+    }
   }
 
   resp.status_code = 200;

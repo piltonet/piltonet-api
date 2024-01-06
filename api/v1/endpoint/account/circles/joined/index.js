@@ -172,6 +172,7 @@ async function getAccountInvitedCircle(http_request, response){
   let result = {
     ...Circle,
     circle_creator: {...MainAccountsMakeup[Circle.circle_creator_main]},
+    circle_total_members: Members.length,
     circle_members: memberList,
   }
 
