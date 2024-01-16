@@ -67,7 +67,7 @@ async function acceptWaitingContactByService(http_request, response){
   }
 
   // To Do
-  /***************** ContactList > addContactByOwner *******************/
+  /***************** ContactList > addContactByService *******************/
   try {
     const NETWORK = process.env.DEFAULT_NETWORK;
     const deployedContactList = require.main.require(`./contracts/deployments/${NETWORK}/ContactList.json`);
@@ -75,7 +75,7 @@ async function acceptWaitingContactByService(http_request, response){
     const contractAbi = require.main.require("./contracts/abi/ContactList.json");
     const ContactList = await ethers.getContractAt(contractAbi, deployedContactList.address);
   
-    const tx = await ContactList.addContactByOwner(params.verifiedParams.profile_tba, params.verifiedParams.contact_tba, {
+    const tx = await ContactList.addContactByService(params.verifiedParams.profile_tba, params.verifiedParams.contact_tba, {
       gasLimit: 4000000
     });
     await tx.wait()
