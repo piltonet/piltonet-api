@@ -74,40 +74,8 @@ async function createCircle(http_request, response){
     response.json(resp);
     return
   }
-  if(params.verifiedParams.circle_service_address != process.env.SERVICE_ADMIN_PUBLIC_KEY){
-    resp = libs.response.setup(resp, '400.3-2');
-    resp.result = [params.errors];
-    response.status(200);
-    response.json(resp);
-    return
-  }
 
   /***************** Insert Circles *******************/
-  // // generate circle_id
-  // let circle_id = {
-  //   account_address: Account.account_address,
-  //   main_account_address: Account.main_account_address,
-  //   created_at: new Date().getTime(),
-  //   random_token: libs.cryptography.random_token(10)
-  // };
-  // const circleId = libs.cryptography.hash_md5(JSON.stringify(circle_id));
-
-  // const tomoChain = { "chainId": "88", "chainName": "TomoChain" };
-  // const paymentTokens = [
-  //   {
-  //     "name": "Tomo",
-  //     "symbol": "TOMO",
-  //     "decimals": 18,
-  //     "logo": "https://cryptologos.cc/logos/tomochain-tomo-logo.png?v=002"
-  //   },
-  //   {
-  //     "name": "Tether",
-  //     "symbol": "USDT",
-  //     "decimals": 6,
-  //     "logo": "https://cryptologos.cc/logos/tether-usdt-logo.svg?v=024"
-  //   }
-  // ];
-
   let circle_params = {
     circle_id: params.verifiedParams.circle_id,
     circle_creator_main: Account.main_account_address,
