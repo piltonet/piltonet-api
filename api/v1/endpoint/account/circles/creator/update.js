@@ -53,9 +53,8 @@ async function updateCircle(http_request, response) {
       [
         'circle_id',
         'circle_name',
-        'circle_fixed_amount',
-        'circle_min_members',
-        'circle_max_members',
+        'circle_size',
+        'circle_round_payments',
         'circle_winners_order',
         'circle_winners_number',
         'circle_patience_benefit'
@@ -99,9 +98,8 @@ async function updateCircle(http_request, response) {
   /***************** Update Circles *******************/
   var circle_params = {
     circle_name: params.verifiedParams.circle_name,
-    circle_fixed_amount: params.verifiedParams.circle_fixed_amount,
-    circle_min_members: params.verifiedParams.circle_min_members,
-    circle_max_members: params.verifiedParams.circle_max_members,
+    circle_size: params.verifiedParams.circle_size,
+    circle_round_payments: params.verifiedParams.circle_round_payments,
     circle_winners_order: params.verifiedParams.circle_winners_order,
     circle_winners_number: params.verifiedParams.circle_winners_number,
     circle_patience_benefit: params.verifiedParams.circle_patience_benefit,

@@ -144,7 +144,7 @@ async function getAccountInvitedCircle(http_request, response){
     return
   }
   const Members = dbMembers.data || [];
-  var memberList = Array.from({length: Circle.circle_max_members}, () => ({}));
+  var memberList = Array.from({length: Circle.circle_size}, () => ({}));
   var memberMainAccounts = [];
   
   let i = 0;

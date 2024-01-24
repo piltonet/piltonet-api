@@ -120,7 +120,7 @@ async function getAccountCircleMembers(http_request, response){
     return
   }
   const Members = dbMembers.data || [];
-  var members = Array.from({length: Circle.circle_max_members}, () => ({}));
+  var members = Array.from({length: Circle.circle_size}, () => ({}));
   var memberMainAccounts = [];
   
   let i = 0;
