@@ -77,7 +77,8 @@ async function updateCircle(http_request, response) {
   /************* Get Account Circle *************/
   let dbCircle = await models.queries.select_table('circles', {
     circle_id: params.verifiedParams.circle_id,
-    circle_creator_main: Account.main_account_address
+    circle_creator_main: Account.main_account_address,
+    circle_status: 'deployed'
   });
   if(!dbCircle.done || !dbCircle.data) {
     resp = libs.response.setup(resp, '500.1-1');
@@ -87,13 +88,13 @@ async function updateCircle(http_request, response) {
   }
   const Circle = dbCircle.data[0];
   
-  /***************** If Circle Launched *******************/
-  if(Circle.circle_status != 'deployed' && Circle.circle_status != 'setuped') {
-    resp = libs.response.setup(resp, '411.1-1');
-    response.status(200);
-    response.json(resp);
-    return
-  }
+  // /***************** If Circle Launched *******************/
+  // if(Circle.circle_status != 'deployed') {
+  //   resp = libs.response.setup(resp, '411.1-1');
+  //   response.status(200);
+  //   response.json(resp);
+  //   return
+  // }
   
   /***************** Update Circles *******************/
   var circle_params = {
@@ -103,7 +104,6 @@ async function updateCircle(http_request, response) {
     circle_winners_order: params.verifiedParams.circle_winners_order,
     circle_winners_number: params.verifiedParams.circle_winners_number,
     circle_patience_benefit: params.verifiedParams.circle_patience_benefit,
-    circle_status: 'setuped'
   }
   let circles_update = await models.queries.update_table('circles', circle_params, {id: Circle.id});
   if(!circles_update.done) {

@@ -73,7 +73,7 @@ async function launchCircle(http_request, response) {
   let dbCircle = await models.queries.select_table('circles', {
     circle_id: params.verifiedParams.circle_id,
     circle_creator_main: Account.main_account_address,
-    circle_status: 'setuped'
+    circle_status: 'deployed'
   });
   if(!dbCircle.done || !dbCircle.data) {
     resp = libs.response.setup(resp, '500.1-1');
@@ -84,7 +84,7 @@ async function launchCircle(http_request, response) {
   const Circle = dbCircle.data[0];
   
   // /***************** If Circle Launched *******************/
-  // if(Circle.circle_status != 'setuped') {
+  // if(Circle.circle_status != 'deployed') {
   //   resp = libs.response.setup(resp, '411.2-1');
   //   response.status(200);
   //   response.json(resp);
