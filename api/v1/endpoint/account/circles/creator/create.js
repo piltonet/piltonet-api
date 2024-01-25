@@ -110,23 +110,21 @@ async function createCircle(http_request, response){
   }
 
   /***************** Insert Circle Whitelists *******************/
-  if(Circle.circle_status == 'deployed') {
-    let whitelist_insert = await models.queries.insert_table('circles_whitelists',
-      {
-        circle_id: Circle.circle_id,
-        whitelist_account_address: Account.account_address,
-        whitelist_moderator_address: Account.account_address,
-        whitelist_is_alive: true,
-        whitelist_is_joined: false,
-        whitelist_is_rejected: false
-      }
-    );
-    if(!whitelist_insert.done){
-      resp = libs.response.setup(resp, `${whitelist_insert.code}-3`);
-      response.status(200);
-      response.json(resp);
-      return
+  let whitelist_insert = await models.queries.insert_table('circles_whitelists',
+    {
+      circle_id: params.verifiedParams.circle_id,
+      whitelist_account_address: Account.account_address,
+      whitelist_moderator_address: Account.account_address,
+      whitelist_is_alive: true,
+      whitelist_is_joined: false,
+      whitelist_is_rejected: false
     }
+  );
+  if(!whitelist_insert.done){
+    resp = libs.response.setup(resp, `${whitelist_insert.code}-3`);
+    response.status(200);
+    response.json(resp);
+    return
   }
 
   resp.status_code = 200;
