@@ -48,11 +48,9 @@ async function getPrice(http_request, response){
     return
   }
   
-  let tokenId = params.verifiedParams.asset == 'vic' ? 'tomochain' : 'tomochain';
-  
   try {
+    const tokenId = params.verifiedParams.asset == 'vic' ? 'tomochain' : 'xxx';
     const prices = fs.readFileSync('assets/data/prices.json', 'utf-8');
-
     const result = JSON.parse(prices)[tokenId]?.usd || 0;
   
     resp = libs.response.setup(resp, '200.1-1');
@@ -61,7 +59,8 @@ async function getPrice(http_request, response){
     response.json(resp);
     return
   } catch(err) {
-    console.log(err);
+    // console.log(err);
+
     resp = libs.response.setup(resp, '500.1-2');
     resp.result = [0];
     response.status(200);

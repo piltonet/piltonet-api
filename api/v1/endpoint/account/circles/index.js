@@ -131,7 +131,7 @@ async function getAccountCircles(http_request, response){
 
   /***************** Get Owned Circles (Creating) *******************/
   let dbCreatingCircles = await models.queries.select_table('circles',
-    {circle_creator_main: Account.main_account_address}, ['circle_status', '<', 'completed']
+    {circle_creator_main: Account.main_account_address}, ['circle_status', '<', 'completed'], ['circle_deployed_at', 'desc']
   );
   if(!dbCreatingCircles.done){
     resp = libs.response.setup(resp, `${dbCreatingCircles.code}-1`);

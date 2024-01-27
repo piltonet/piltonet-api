@@ -5,7 +5,7 @@ function schedule(){
   // cron.schedule('00 59 23 * * *', () => { // every day at midnight
   //   jobCampaigns();
   // });
-  cron.schedule('* * * * *', () => { // every minute
+  cron.schedule('*/2 * * * *', () => { // every 2 minute
   // cron.schedule('*/10 * * * * *', () => { // every 10 seconds
     jobOracles();
   });
