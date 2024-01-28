@@ -1,12 +1,14 @@
 const cron = require('node-cron');
 const { OracleCoingecko } = require.main.require('./controllers');
 
+const everyMidnight = '00 59 23 * * *';
+const everyHour = '0 * * * *';
+const every2Mins = '*/2 * * * *';
+const every10Secs = '*/10 * * * * *';
+
 function schedule(){
-  // cron.schedule('00 59 23 * * *', () => { // every day at midnight
-  //   jobCampaigns();
-  // });
-  cron.schedule('*/2 * * * *', () => { // every 2 minute
-  // cron.schedule('*/10 * * * * *', () => { // every 10 seconds
+  const schOracles = process.env.NODE_ENV == 'development' ? everyHour : every2Mins;
+  cron.schedule(schOracles, () => {
     jobOracles();
   });
 }

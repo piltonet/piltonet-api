@@ -18,7 +18,7 @@ const prices = async () => {
         if(err) {
           console.error(err);
         } else {
-          // file written successfully
+          // console.log('file written successfully', new Date());
         }
       });
     } else {
