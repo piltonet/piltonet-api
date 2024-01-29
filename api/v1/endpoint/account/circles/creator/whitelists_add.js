@@ -1,5 +1,6 @@
 const libs = require.main.require('./libs');
 const models = require.main.require('./models');
+const { ethers } = require('hardhat');
 
 // Constructor of Endpoint Leaf
 class leaf { // Required
@@ -70,6 +71,29 @@ async function addToWhitelist(http_request, response){
     response.status(200);
     response.json(resp);
     return
+  }
+
+  /************* Get Circle *************/
+  let dbCircle = await models.queries.select_table('circles', {circle_id: params.verifiedParams.circle_id});
+  if(!dbCircle.done || !dbCircle.data) {
+    resp = libs.response.setup(resp, '500.1-1');
+    response.status(200);
+    response.json(resp);
+    return
+  }
+  const Circle = dbCircle.data[0];
+
+  /***************** Insert Seme-decentralized Circle Whitelists to Contract *******************/
+  if(Circle.circle_mode == 'semi_dec') {
+    const contractAbi = require.main.require("./contracts/abi/TLCC.json");
+    const TLCC = await ethers.getContractAt(contractAbi, Circle.circle_id);
+
+    const tx = await TLCC.addToWhitelist(contactAdrs, {
+      gasLimit: 4000000
+    });
+    await tx.wait()
+    
+    console.log(`${contactAdrs.length} contact(s) added to contract whitelist.`);
   }
 
   /***************** Get & Makeup Main Accounts By TBA *******************/
