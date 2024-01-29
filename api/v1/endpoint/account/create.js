@@ -1,5 +1,3 @@
-const fs = require('fs');
-const base64Img = require('base64-img');
 const libs = require.main.require('./libs');
 const models = require.main.require('./models');
 const { ethers } = require('hardhat');
@@ -67,7 +65,7 @@ async function createAccount(http_request, response){
   }
 
   /***************** ERC721Profile > Create Profile *******************/
-  try{
+  try {
     const NETWORK = process.env.DEFAULT_NETWORK;
     const deployedERC721Profile = require.main.require(`./contracts/deployments/${NETWORK}/ERC721Profile.json`);
     const contractAbi = require.main.require("./contracts/abi/ERC721Profile.json");
@@ -125,7 +123,7 @@ async function createAccount(http_request, response){
     response.status(200);
     response.json(resp);
     return
-  }catch(e){
+  } catch(e) {
     console.log(e);
     resp = libs.response.setup(resp, '400.3-2');
     resp.result = [e];
