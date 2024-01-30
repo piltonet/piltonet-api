@@ -48,14 +48,14 @@ async function updateProfile(http_request, response){
   const Account = connected_account.result;
   
   /************* Get Main Account *************/
-  let dbMainAccount = await models.queries.select_table('profiles', {main_account_address: Account.main_account_address});
-  if(!dbMainAccount.done || !dbMainAccount.data){
+  let dbProfiles = await models.queries.select_table('profiles', {main_account_address: Account.main_account_address});
+  if(!dbProfiles.done || !dbProfiles.data){
     resp = libs.response.setup(resp, '500.1-1');
     response.status(200);
     response.json(resp);
     return
   }
-  const MainAccount = dbMainAccount.data[0];
+  const Profile = dbProfiles.data[0];
   
   /************* Validate Params Regex from libs.validations.validate_request_params() *************/
   try{
@@ -106,7 +106,7 @@ async function updateProfile(http_request, response){
     account_social_linkedin: params.verifiedParams.account_social_linkedin,
     account_social_telegram: params.verifiedParams.account_social_telegram
   }
-  let main_account_update = await models.queries.update_table('profiles', main_account_params, {id: MainAccount.id});
+  let main_account_update = await models.queries.update_table('profiles', main_account_params, {id: Profile.id});
   if(!main_account_update.done){
     resp = libs.response.setup(resp, `${main_account_update.code}-3`);
     response.status(200);

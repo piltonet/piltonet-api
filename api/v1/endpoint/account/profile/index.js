@@ -52,19 +52,19 @@ async function getAccountProfile(http_request, response){
   const Account = connected_account.result;
 
   /***************** Get Main Account *******************/
-  var MainAccount = null;
+  var Profile = null;
   var CirclesNumber = 0;
   var ContactsNumber = 0;
   
   if(Account.main_account_address && Account.account_status != 'waiting') {
-    let main_account = await models.queries.select_table('profiles', {main_account_address: Account.main_account_address});
-    if(!main_account.done || !main_account.data) {
-      resp = libs.response.setup(resp, `${main_account.code}-2`);
+    let dbProfiles = await models.queries.select_table('profiles', {main_account_address: Account.main_account_address});
+    if(!dbProfiles.done || !dbProfiles.data) {
+      resp = libs.response.setup(resp, `${dbProfiles.code}-2`);
       response.status(200);
       response.json(resp);
       return
     }
-    MainAccount = main_account.data[0];
+    Profile = dbProfiles.data[0];
 
     /***************** Get Circles *******************/
     let dbCircles = await models.queries.select_table('circles', {circle_creator_main: Account.main_account_address});
@@ -87,22 +87,22 @@ async function getAccountProfile(http_request, response){
     ContactsNumber = dbContacts.data ? dbContacts.data.length : 0;
   }
 
-  const result = MainAccount ? {
-    account_address: MainAccount.main_account_address,
-    profiles_contract_address: MainAccount.profiles_contract_address,
-    account_token_id: MainAccount.account_token_id,
-    account_tba_address: MainAccount.account_tba_address,
-    account_image_url: MainAccount.account_image_url,
-    account_fullname: MainAccount.account_fullname,
-    account_nickname: MainAccount.account_nickname,
-    account_email: MainAccount.account_email,
-    account_social_twitter: MainAccount.account_social_twitter,
-    account_social_facebook: MainAccount.account_social_facebook,
-    account_social_instagram: MainAccount.account_social_instagram,
-    account_social_linkedin: MainAccount.account_social_linkedin,
-    account_social_telegram: MainAccount.account_social_telegram,
-    account_invite_code: MainAccount.account_invite_code,
-    account_invite_code_ed: MainAccount.account_invite_code_ed,
+  const result = Profile ? {
+    account_address: Profile.main_account_address,
+    profiles_contract_address: Profile.profiles_contract_address,
+    account_token_id: Profile.account_token_id,
+    account_tba_address: Profile.account_tba_address,
+    account_image_url: Profile.account_image_url,
+    account_fullname: Profile.account_fullname,
+    account_nickname: Profile.account_nickname,
+    account_email: Profile.account_email,
+    account_social_twitter: Profile.account_social_twitter,
+    account_social_facebook: Profile.account_social_facebook,
+    account_social_instagram: Profile.account_social_instagram,
+    account_social_linkedin: Profile.account_social_linkedin,
+    account_social_telegram: Profile.account_social_telegram,
+    account_invite_code: Profile.account_invite_code,
+    account_invite_code_ed: Profile.account_invite_code_ed,
     account_circles_number: CirclesNumber,
     account_contacts_number: ContactsNumber
   } : null;

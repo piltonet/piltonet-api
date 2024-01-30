@@ -66,27 +66,27 @@ async function fetchInviteCode(http_request, response){
   }
 
   /***************** Look For Friend Main Account *******************/
-  let dbFriendMainAccount = await models.queries.select_table('profiles', {account_invite_code: params.verifiedParams.invite_code});
-  if(!dbFriendMainAccount.done){
-    resp = libs.response.setup(resp, `${dbFriendMainAccount.code}-2`);
+  let dbProfiles = await models.queries.select_table('profiles', {account_invite_code: params.verifiedParams.invite_code});
+  if(!dbProfiles.done){
+    resp = libs.response.setup(resp, `${dbProfiles.code}-2`);
     response.status(200);
     response.json(resp);
     return
   }
-  if(!dbFriendMainAccount.data){
+  if(!dbProfiles.data){
     resp = libs.response.setup(resp, '405.3-1');
     response.status(200);
     response.json(resp);
     return
   }
-  const FriendMainAccount = dbFriendMainAccount.data[0];
-  if(FriendMainAccount.main_account_address == Account.main_account_address) {
+  const ContactProfile = dbProfiles.data[0];
+  if(ContactProfile.main_account_address == Account.main_account_address) {
     resp = libs.response.setup(resp, '405.3-1');
     response.status(200);
     response.json(resp);
     return
   }
-  if(new Date(FriendMainAccount.account_invite_code_ed) < new Date()) {
+  if(new Date(ContactProfile.account_invite_code_ed) < new Date()) {
     resp = libs.response.setup(resp, '405.4-1');
     response.status(200);
     response.json(resp);
@@ -96,7 +96,7 @@ async function fetchInviteCode(http_request, response){
     /***************** Look For Contact Before *******************/
     let dbContact = await models.queries.select_table('contacts', {
       main_account_address: Account.main_account_address,
-      contact_account_address: FriendMainAccount.main_account_address
+      contact_account_address: ContactProfile.main_account_address
     });
     if(!dbContact.done){
       resp = libs.response.setup(resp, `${dbContact.code}-3`);
@@ -112,19 +112,19 @@ async function fetchInviteCode(http_request, response){
     }
 
   let invite_code_account = {
-    main_account_address: FriendMainAccount.main_account_address,
-    account_tba_address: FriendMainAccount.account_tba_address,
-    account_nickname: FriendMainAccount.account_nickname,
-    account_email: FriendMainAccount.account_email,
-    account_fullname: FriendMainAccount.account_fullname,
-    account_image_url: FriendMainAccount.account_image_url,
-    account_social_twitter: FriendMainAccount.account_social_twitter,
-    account_social_facebook: FriendMainAccount.account_social_facebook,
-    account_social_instagram: FriendMainAccount.account_social_instagram,
-    account_social_linkedin: FriendMainAccount.account_social_linkedin,
-    account_social_telegram: FriendMainAccount.account_social_telegram,
-    account_invite_code: FriendMainAccount.account_invite_code,
-    account_invite_code_ed: FriendMainAccount.account_invite_code_ed
+    main_account_address: ContactProfile.main_account_address,
+    account_tba_address: ContactProfile.account_tba_address,
+    account_nickname: ContactProfile.account_nickname,
+    account_email: ContactProfile.account_email,
+    account_fullname: ContactProfile.account_fullname,
+    account_image_url: ContactProfile.account_image_url,
+    account_social_twitter: ContactProfile.account_social_twitter,
+    account_social_facebook: ContactProfile.account_social_facebook,
+    account_social_instagram: ContactProfile.account_social_instagram,
+    account_social_linkedin: ContactProfile.account_social_linkedin,
+    account_social_telegram: ContactProfile.account_social_telegram,
+    account_invite_code: ContactProfile.account_invite_code,
+    account_invite_code_ed: ContactProfile.account_invite_code_ed
   }
 
   resp.status_code = 200;

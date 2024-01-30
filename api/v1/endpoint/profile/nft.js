@@ -33,14 +33,14 @@ async function getProfile(http_request, response){
   try {
     const tba_address = http_request.params.tba_address || '0x0000000000000000000000000000000000000000';
     const tbaAddress = ethers.getAddress(`0x${tba_address}`);
-    let dbProfile = await models.queries.select_table('profiles', {account_tba_address: tbaAddress});
-    if(!dbProfile.done){
+    let dbProfiles = await models.queries.select_table('profiles', {account_tba_address: tbaAddress});
+    if(!dbProfiles.done){
       resp = libs.response.setup(resp, '500.1-1');
       response.status(500);
       response.json(resp);
       return
     }
-    if(!dbProfile.data || dbProfile.data.length == 0){
+    if(!dbProfiles.data || dbProfiles.data.length == 0){
       resp = libs.response.setup(resp, '404.1-1');
       resp.result = [];
       response.status(404);
@@ -48,7 +48,7 @@ async function getProfile(http_request, response){
       return
     }
   
-    const Profile = dbProfile.data[0];
+    const Profile = dbProfiles.data[0];
     
     // const profileNFT = {
     //   account_address: Profile.account_address,

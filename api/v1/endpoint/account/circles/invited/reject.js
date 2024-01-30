@@ -69,14 +69,14 @@ async function rejectCircleInvite(http_request, response){
   }
 
   /************* Get Circle *************/
-  let dbCircle = await models.queries.select_table('circles', {circle_id: params.verifiedParams.circle_id});
-  if(!dbCircle.done || !dbCircle.data) {
+  let dbCircles = await models.queries.select_table('circles', {circle_id: params.verifiedParams.circle_id});
+  if(!dbCircles.done || !dbCircles.data) {
     resp = libs.response.setup(resp, '500.1-1');
     response.status(200);
     response.json(resp);
     return
   }
-  const Circle = dbCircle.data[0];
+  const Circle = dbCircles.data[0];
 
   /***************** Update Circle Whitelists *******************/
   let update_where_params = {

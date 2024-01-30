@@ -69,18 +69,18 @@ async function launchCircle(http_request, response) {
   }
 
   /************* Get Account Circle *************/
-  let dbCircle = await models.queries.select_table('circles', {
+  let dbCircles = await models.queries.select_table('circles', {
     circle_id: params.verifiedParams.circle_id,
     circle_creator_main: Account.main_account_address,
     circle_status: 'deployed'
   });
-  if(!dbCircle.done || !dbCircle.data) {
+  if(!dbCircles.done || !dbCircles.data) {
     resp = libs.response.setup(resp, '401.1-1');
     response.status(200);
     response.json(resp);
     return
   }
-  const Circle = dbCircle.data[0];
+  const Circle = dbCircles.data[0];
   
   /***************** Insert Seme-decentralized Circle Whitelists to Contract *******************/
   if(Circle.circle_mode == 'semi_dec') {

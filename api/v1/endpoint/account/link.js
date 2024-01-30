@@ -66,25 +66,25 @@ async function linkAccount(http_request, response){
   }
 
   /***************** Look For Main Account *******************/
-  let dbMainAccount = await models.queries.select_table('profiles', {main_account_address: params.verifiedParams.main_account_address});
-  if(!dbMainAccount.done){
-    resp = libs.response.setup(resp, `${dbMainAccount.code}-2`);
+  let dbProfiles = await models.queries.select_table('profiles', {main_account_address: params.verifiedParams.main_account_address});
+  if(!dbProfiles.done){
+    resp = libs.response.setup(resp, `${dbProfiles.code}-2`);
     response.status(200);
     response.json(resp);
     return
   }
-  if(!dbMainAccount.data){
+  if(!dbProfiles.data){
     resp = libs.response.setup(resp, '407.1-1');
     response.status(200);
     response.json(resp);
     return
   }
-  const MainAccount = dbMainAccount.data[0];
+  const Profile = dbProfiles.data[0];
 
   /***************** Update Account *******************/
   let account_params = {
     account_status: 'waiting',
-    main_account_address: MainAccount.main_account_address
+    main_account_address: Profile.main_account_address
   }
   let account_update = await models.queries.update_table('accounts', account_params, {id: Account.id});
   if(!account_update.done){

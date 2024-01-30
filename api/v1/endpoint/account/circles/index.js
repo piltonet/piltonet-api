@@ -47,15 +47,15 @@ async function getAccountCircles(http_request, response){
   const Account = connected_account.result;
 
   /***************** Get & Makeup Main Accounts *******************/
-  let dbMainAccounts = await models.queries.select_table('profiles');
-  if(!dbMainAccounts.done || !dbMainAccounts.data){
+  let dbProfiles = await models.queries.select_table('profiles');
+  if(!dbProfiles.done || !dbProfiles.data){
     resp = libs.response.setup(resp, '500.1-1');
     response.status(200);
     response.json(resp);
     return
   }
   var MainAccountsMakeup = {};
-  for(let main_account of dbMainAccounts.data) {
+  for(let main_account of dbProfiles.data) {
     MainAccountsMakeup[main_account.main_account_address] = {
       main_account_address: main_account.main_account_address,
       account_nickname: main_account.account_nickname,

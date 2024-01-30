@@ -66,27 +66,27 @@ async function acceptInviteCode(http_request, response){
   }
 
   /***************** Look For Friend Main Account *******************/
-  let dbFriendMainAccount = await models.queries.select_table('profiles', {account_invite_code: params.verifiedParams.invite_code});
-  if(!dbFriendMainAccount.done){
-    resp = libs.response.setup(resp, `${dbFriendMainAccount.code}-2`);
+  let dbProfiles = await models.queries.select_table('profiles', {account_invite_code: params.verifiedParams.invite_code});
+  if(!dbProfiles.done){
+    resp = libs.response.setup(resp, `${dbProfiles.code}-2`);
     response.status(200);
     response.json(resp);
     return
   }
-  if(!dbFriendMainAccount.data){
+  if(!dbProfiles.data){
     resp = libs.response.setup(resp, '405.3-1');
     response.status(200);
     response.json(resp);
     return
   }
-  const FriendMainAccount = dbFriendMainAccount.data[0];
-  if(FriendMainAccount.main_account_address == Account.main_account_address) {
+  const ContactProfile = dbProfiles.data[0];
+  if(ContactProfile.main_account_address == Account.main_account_address) {
     resp = libs.response.setup(resp, '405.3-1');
     response.status(200);
     response.json(resp);
     return
   }
-  if(new Date(FriendMainAccount.account_invite_code_ed) < new Date()) {
+  if(new Date(ContactProfile.account_invite_code_ed) < new Date()) {
     resp = libs.response.setup(resp, '405.4-1');
     response.status(200);
     response.json(resp);
@@ -96,7 +96,7 @@ async function acceptInviteCode(http_request, response){
   var contactStatus = 'waiting';
   /***************** Get Account In Friend Contact *******************/
   where_params = {
-    main_account_address: FriendMainAccount.main_account_address,
+    main_account_address: ContactProfile.main_account_address,
     contact_account_address: Account.main_account_address
   }
   let dbWaitingFriends = await models.queries.select_table('contacts', where_params);
@@ -116,7 +116,7 @@ async function acceptInviteCode(http_request, response){
   let contact_id = {
     account_address: Account.account_address,
     main_account_address: Account.main_account_address,
-    contact_account_address: FriendMainAccount.main_account_address,
+    contact_account_address: ContactProfile.main_account_address,
     created_at: new Date().getTime(),
     random_token: libs.cryptography.random_token(10)
   };
@@ -125,7 +125,7 @@ async function acceptInviteCode(http_request, response){
   let contact_params = {
     contact_id: contactId,
     main_account_address: Account.main_account_address,
-    contact_account_address: FriendMainAccount.main_account_address,
+    contact_account_address: ContactProfile.main_account_address,
     contact_trust_level: 0,
     contact_status: contactStatus
   }
