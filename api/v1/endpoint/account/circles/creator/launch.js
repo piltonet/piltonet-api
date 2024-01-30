@@ -1,7 +1,6 @@
-const fs = require('fs');
-const base64Img = require('base64-img');
 const libs = require.main.require('./libs');
 const models = require.main.require('./models');
+const { ethers } = require('hardhat');
 
 // Constructor of Endpoint Leaf
 class leaf { // Required
@@ -76,21 +75,27 @@ async function launchCircle(http_request, response) {
     circle_status: 'deployed'
   });
   if(!dbCircle.done || !dbCircle.data) {
-    resp = libs.response.setup(resp, '500.1-1');
+    resp = libs.response.setup(resp, '401.1-1');
     response.status(200);
     response.json(resp);
     return
   }
   const Circle = dbCircle.data[0];
   
-  // /***************** If Circle Launched *******************/
-  // if(Circle.circle_status != 'deployed') {
-  //   resp = libs.response.setup(resp, '411.2-1');
-  //   response.status(200);
-  //   response.json(resp);
-  //   return
-  // }
-  
+  /***************** Insert Seme-decentralized Circle Whitelists to Contract *******************/
+  if(Circle.circle_mode == 'semi_dec') {
+    const contractAbi = require.main.require("./contracts/abi/TLCC.json");
+    const TLCC = await ethers.getContractAt(contractAbi, Circle.circle_id);
+    const startDate = parseInt(new Date(params.verifiedParams.start_date).getTime() / 1000);
+    console.log(startDate);
+    const tx = await TLCC.launchCircle(startDate, {
+      gasLimit: 4000000
+    });
+    await tx.wait()
+    
+    console.log(`Circle launched, start date: ${params.verifiedParams.start_date}.`);
+  }
+
   /***************** Update Circles *******************/
   var circle_params = {
     circle_start_date: params.verifiedParams.start_date,
