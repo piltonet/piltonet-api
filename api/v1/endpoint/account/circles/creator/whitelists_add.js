@@ -45,6 +45,16 @@ async function addToWhitelist(http_request, response){
     return
   }
   const Account = connected_account.result;
+
+  /************* Get Profile *************/
+  let dbProfiles = await models.queries.select_table('profiles', {main_account_address: Account.main_account_address});
+  if(!dbProfiles.done || !dbProfiles.data) {
+    resp = libs.response.setup(resp, `${dbProfiles.code}-2`);
+    response.status(200);
+    response.json(resp);
+    return
+  }
+  Profile = dbProfiles.data[0];
   
   /************* Validate Params Regex from libs.validations.validate_request_params() *************/
   try{
@@ -92,7 +102,7 @@ async function addToWhitelist(http_request, response){
     const contractAbi = require.main.require("./contracts/abi/TLCC.json");
     const TLCC = await ethers.getContractAt(contractAbi, Circle.circle_id);
 
-    const tx = await TLCC.addToWhitelist(contactAdrs, {
+    const tx = await TLCC.addToWhitelist(Profile.account_tba_address, contactAdrs, {
       gasLimit: 4000000
     });
     await tx.wait()
@@ -101,7 +111,7 @@ async function addToWhitelist(http_request, response){
   }
 
   /***************** Get & Makeup Main Accounts By TBA *******************/
-  let dbProfiles = await models.queries.select_table('profiles');
+  dbProfiles = await models.queries.select_table('profiles');
   if(!dbProfiles.done || !dbProfiles.data){
     resp = libs.response.setup(resp, '500.1-1');
     response.status(200);
