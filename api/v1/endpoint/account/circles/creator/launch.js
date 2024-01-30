@@ -91,7 +91,7 @@ async function launchCircle(http_request, response) {
     const tx = await TLCC.launchCircle(startDate, {
       gasLimit: 4000000
     });
-    await tx.wait()
+    await tx.wait();
     
     console.log(`Circle launched, start date: ${params.verifiedParams.start_date}.`);
   }
