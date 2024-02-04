@@ -84,15 +84,26 @@ async function launchCircle(http_request, response) {
   
   /***************** Insert Seme-decentralized Circle Whitelists to Contract *******************/
   if(Circle.circle_mode == 'semi_dec') {
-    const contractAbi = require.main.require("./contracts/abi/TLCC.json");
-    const TLCC = await ethers.getContractAt(contractAbi, Circle.circle_id);
-    const startDate = parseInt(new Date(params.verifiedParams.start_date).getTime() / 1000);
-    const tx = await TLCC.launchCircle(startDate, {
-      gasLimit: 4000000
-    });
-    await tx.wait();
-    
-    console.log(`Circle launched, start date: ${params.verifiedParams.start_date}.`);
+    try {
+      const contractAbi = require.main.require("./contracts/abi/TLCC.json");
+      const TLCC = await ethers.getContractAt(contractAbi, Circle.circle_id);
+      const startDate = parseInt(new Date(params.verifiedParams.start_date).getTime() / 1000);
+      const tx = await TLCC.launchCircle(startDate, {
+        gasLimit: 4000000
+      });
+      await tx.wait();
+      // console.log(`Circle launched, start date: ${params.verifiedParams.start_date}.`);
+    } catch(err) {
+      const result = await libs.hardhat.getRevertReason(err.receipt.hash);
+      // console.error(result);
+      resp.status_code = 200;
+      resp.done = false;
+      resp.message_type = 'error';
+      resp.message = result;
+      response.status(200);
+      response.json(resp);
+      return
+    }
   }
 
   /***************** Update Circles *******************/
