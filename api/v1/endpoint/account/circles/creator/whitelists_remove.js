@@ -72,30 +72,55 @@ async function removeFromWhitelist(http_request, response){
     return
   }
 
-  /************* Get Account Circle *************/
+  /************* Get Circle *************/
   let dbCircles = await models.queries.select_table('circles', {
     circle_id: params.verifiedParams.circle_id,
-    circle_creator_main: Account.main_account_address
+    circle_creator_main: Account.main_account_address,
+    circle_status: 'deployed'
   });
   if(!dbCircles.done || !dbCircles.data) {
-    resp = libs.response.setup(resp, '500.1-1');
+    resp = libs.response.setup(resp, '401.1-1');
     response.status(200);
     response.json(resp);
     return
   }
   const Circle = dbCircles.data[0];
-  
-  /***************** If Circle Launched *******************/
-  if(Circle.circle_status != 'deployed' && Circle.circle_status != 'setuped') {
-    resp = libs.response.setup(resp, '411.1-1');
+
+  /***************** Remove from Seme-decentralized Circle Whitelists Contract *******************/
+  if(Circle.circle_mode == 'semi_dec') {
+    const contractAbi = require.main.require("./contracts/abi/TLCC.json");
+    const TLCC = await ethers.getContractAt(contractAbi, Circle.circle_id);
+
+    const tx = await TLCC.removeFromWhitelist(Profile.account_tba_address, contactAdrs, {
+      gasLimit: 4000000
+    });
+    await tx.wait()
+    console.log(`${contactAdrs.length} contact(s) removed from contract whitelist.`);
+  }
+
+  /***************** Get & Makeup Main Accounts By TBA *******************/
+  dbProfiles = await models.queries.select_table('profiles');
+  if(!dbProfiles.done || !dbProfiles.data){
+    resp = libs.response.setup(resp, '500.1-1');
     response.status(200);
     response.json(resp);
     return
   }
-
+  var TBAsMakeup = {};
+  for(let main_account of dbProfiles.data) {
+    TBAsMakeup[main_account.account_tba_address] = {
+      main_account_address: main_account.main_account_address
+    }
+  }
+  
+  /***************** Remove Whitelists *******************/
   for(var contactAdr of contactAdrs) {
-    /***************** Remove Invite *******************/
-    await models.queries.delete_table('circles_whitelists', {whitelist_account_address: contactAdr});
+    if(contactAdr in TBAsMakeup) {
+      await models.queries.delete_table('circles_whitelists', {
+        circle_id: params.verifiedParams.circle_id,
+        whitelist_account_address: TBAsMakeup[contactAdr].main_account_address
+      });
+    }
   }
 
   resp.status_code = 200;

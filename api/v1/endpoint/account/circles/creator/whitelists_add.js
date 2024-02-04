@@ -106,7 +106,6 @@ async function addToWhitelist(http_request, response){
       gasLimit: 4000000
     });
     await tx.wait()
-    
     console.log(`${contactAdrs.length} contact(s) added to contract whitelist.`);
   }
 

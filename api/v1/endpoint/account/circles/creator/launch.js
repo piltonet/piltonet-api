@@ -87,7 +87,6 @@ async function launchCircle(http_request, response) {
     const contractAbi = require.main.require("./contracts/abi/TLCC.json");
     const TLCC = await ethers.getContractAt(contractAbi, Circle.circle_id);
     const startDate = parseInt(new Date(params.verifiedParams.start_date).getTime() / 1000);
-    console.log(startDate);
     const tx = await TLCC.launchCircle(startDate, {
       gasLimit: 4000000
     });
