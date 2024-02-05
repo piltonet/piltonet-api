@@ -9,7 +9,6 @@ var app = api.config();
 global._LANG = app.language;
 
 //Running app is server instance to serve clients
-//app.use('/documentation',docs.get_doc());
 const SERVER = app.express.listen(process.env.NODE_PORT, () => {
  console.log('Server running on port: ', process.env.NODE_PORT);
 });
