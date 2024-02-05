@@ -1,5 +1,6 @@
 const libs = require.main.require('./libs');
 const models = require.main.require('./models');
+const { ethers } = require('hardhat');
 
 // Constructor of Endpoint Leaf
 class leaf { // Required
@@ -44,6 +45,16 @@ async function removeFromWhitelist(http_request, response){
     return
   }
   const Account = connected_account.result;
+  
+  /************* Get Profile *************/
+  let dbProfiles = await models.queries.select_table('profiles', {main_account_address: Account.main_account_address});
+  if(!dbProfiles.done || !dbProfiles.data) {
+    resp = libs.response.setup(resp, `${dbProfiles.code}-2`);
+    response.status(200);
+    response.json(resp);
+    return
+  }
+  Profile = dbProfiles.data[0];
   
   /************* Validate Params Regex from libs.validations.validate_request_params() *************/
   try{
